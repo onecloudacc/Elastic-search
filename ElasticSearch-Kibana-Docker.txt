@@ -1,0 +1,24 @@
+https://hub.docker.com/_/elasticsearch
+
+docker network create kibanaNetwork
+
+ Network created : kibanaNetwork
+
+docker run -d --name elasticsearch --net kibanaNetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.3.0
+
+
+elastic search docker ip
+http://dockerhostip:9200/
+
+https://hub.docker.com/_/kibana
+
+docker pull kibana:7.3.0
+
+
+
+docker run -d --name kibana --net kibanaNetwork -p 5601:5601 kibana:7.3.0
+http://dockerhostip:5601/
+
+///
+To see the containers :docker ps -a
+to remove the comtainer : docker rm containerid
