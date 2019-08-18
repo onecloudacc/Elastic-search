@@ -1,0 +1,272 @@
+https://hub.docker.com/_/elasticsearch
+
+ Network created : kibanaNetwork
+
+docker run -d --name elasticsearch --net kibanaNetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.3.0
+
+
+elastic search docker ip
+http://192.168.99.100:9200/
+
+https://hub.docker.com/_/kibana
+
+docker pull kibana:7.3.0
+
+
+
+docker run -d --name kibana --net kibanaNetwork -p 5601:5601 kibana:7.3.0
+http://192.168.99.100:5601/
+
+///
+To see the containers :docker ps -a
+to remove the comtainer : docker rm containerid
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+PUT helloindex?pretty
+
+POST /test/default/
+{
+  "testerId" : "rmahadevan",
+  "testerName" : "Rajesh Mahadevan"
+}
+
+POST /helloindex/11/
+{
+  "testerId" : "rmahad6",
+  "testerName" : "Rajesh6",
+   "profile" : {
+     "firstName" : "Rajesh search",
+     "lastName": "Mahadevan6"
+   }
+   
+}
+
+
+GET /helloindex/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET /helloindex/_search
+{
+  "query": {
+    "match": {
+      "profile.firstName": "Rajesh"
+    }
+  }
+}
+
+
+
+GET /helloindex/_search
+{
+  "query": {
+    "query_string": {
+      "default_field": "profile.firstName",
+      "query": "Rajesh Elastic",
+      "default_operator": "AND"
+    }
+   
+    }
+  }
+
+
+-----
+
+exact match 
+
+  
+  GET /helloindex/_search
+  {
+    "query": {
+      "term": {
+        "profile.firstName.keyword": {
+          "value": "Rajesh search"
+        }
+      }
+    }
+  }
+  
+  -----
+  
+  Exact match in multiple fields
+  GET /helloindex/_search
+    {
+      "query": {
+        "terms": {
+          "profile.firstName.keyword": [
+            "Rajesh2",
+            "Rajesh3"
+  
+          ]
+        }
+      }
+    }
+    
+---------------------------
+
+MUST : 
+match more than one condition
+
+
+ GET /helloindex/_search
+    {
+    
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+          "profile.gender": {
+            "value": "male"
+          }
+            }
+            },
+            {
+              "query_string": {
+                "default_field": "profile.firstName",
+                "query": "Rajesh7",
+                "default_operator": "AND"
+              }
+            }
+           
+          ]
+        }
+        
+    
+        }
+        
+      }
+    
+    =======Range query=====
+    
+    
+       GET /helloindex/_search
+          {
+            "query": {
+              "range": {
+                "profile.age": {
+                  "gte": 10,
+                  "lte": 40
+                }
+              }
+            }
+      }
+      
+      
+      
+      =====
+      
+      
+      
+        GET /helloindex/_search
+        {
+          "query": {
+            "prefix": {
+              "profile.gender": {
+                "value": "fem"
+              }
+            }
+          }
+        }
+        
+        // Wild card is heavy and will not work if there is a space in the value that we are searching for.
+        
+         GET /helloindex/_search
+        {
+          "query": {
+            "wildcard": {
+              "testerId": {
+                "value": "rmah*"
+              }
+            }
+          }
+          
+  }
+  
+  =======
+  
+  should takes two objects with in array to compare ( OR condition)
+  
+  (Inside must , should , filter, the query dsl language can be used (like "query_string, term etc..))
+  
+  
+  GET /helloindex/_search
+  {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "query_string": {
+              "query": "Rajesh*",
+              "default_field": "profile.firstName"
+            }
+          }
+        ],
+        "filter": {
+          "range": {
+            "profile.age": {
+              "gte": 20,
+              "lte": 40
+            }
+          }
+        },
+        "should": [
+          {
+            "term": {
+              "profile.lastName": {
+                "value": "Mahadevan10"
+              }
+            }
+          },
+          {
+            "term": {
+              "profile.lastName": {
+                "value": "Mahadevan11"
+              }
+            }
+          }
+        ]
+      }
+    }
+}
+  
+  
+=====
+Should under bool
+
+GET /helloindex/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "profile.lastName": {
+              "value": "Mahadevan10"
+            }
+          }
+        },
+        {
+          "term": {
+            "profile.gender": {
+              "value": "female"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+  
+  
+  
