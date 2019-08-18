@@ -1,25 +1,4 @@
-https://hub.docker.com/_/elasticsearch
 
- Network created : kibanaNetwork
-
-docker run -d --name elasticsearch --net kibanaNetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.3.0
-
-
-elastic search docker ip
-http://192.168.99.100:9200/
-
-https://hub.docker.com/_/kibana
-
-docker pull kibana:7.3.0
-
-
-
-docker run -d --name kibana --net kibanaNetwork -p 5601:5601 kibana:7.3.0
-http://192.168.99.100:5601/
-
-///
-To see the containers :docker ps -a
-to remove the comtainer : docker rm containerid
 
 GET _search
 {
@@ -30,12 +9,6 @@ GET _search
 
 
 PUT helloindex?pretty
-
-POST /test/default/
-{
-  "testerId" : "rmahadevan",
-  "testerName" : "Rajesh Mahadevan"
-}
 
 POST /helloindex/11/
 {
